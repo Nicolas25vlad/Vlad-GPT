@@ -1,1 +1,1 @@
-sudo python3 main.py
+sudo python3 $HOME/Projetos/Genai/main.py

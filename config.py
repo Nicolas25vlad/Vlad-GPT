@@ -3,7 +3,7 @@ import json
 
 
 # Configurações da API GenAI
-with open("config.json") as f:
+with open("/home/vlad/Projetos/Genai/config.json") as f:
     config_data = json.load(f)
 GENAI_API_KEY = config_data.get("api_key", "")
 
