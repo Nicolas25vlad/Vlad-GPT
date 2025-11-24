@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+import os
+# Configura environment para áudio ANTES de qualquer import
+os.environ['SDL_AUDIODRIVER'] = 'alsa'
+os.environ['AUDIODRIVER'] = 'alsa'
+os.environ['PULSE_RUNTIME_PATH'] = '/run/user/1000/pulse'  # Ajuste o ID do usuário se necessário
+
 import sys
 import time
 from config import *

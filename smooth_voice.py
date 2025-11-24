@@ -8,6 +8,8 @@ import speech_recognition as sr
 from config import VOICE_ENABLED
 
 class SmoothVoice:
+    os.environ['SDL_AUDIODRIVER'] = 'alsa'
+    os.environ['AUDIODRIVER'] = 'alsa'
     def __init__(self):
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
