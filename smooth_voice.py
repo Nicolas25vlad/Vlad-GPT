@@ -22,7 +22,7 @@ class SmoothVoice:
             "edge_tts": {
                 "name": "Edge TTS (Recomendado)",
                 "command": "edge-tts",
-                "args": ["--voice", "pt-BR-BryanNeural", "--rate=+25%"],
+                "args": ["--voice", "pt-BR-AntonioNeural", "--rate=+25%"],
                 "available": self._check_edge_tts()
             },
             "google_tts_simple": {
