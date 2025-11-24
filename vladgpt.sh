@@ -1,1 +1,1 @@
-sudo python3 /home/vlad/scripts/Genai/main.py
+sudo python3 main.py
