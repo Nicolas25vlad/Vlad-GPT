@@ -1,26 +1,19 @@
 #!/usr/bin/env python3
 
 import os
-# Configura environment para áudio ANTES de qualquer import
-os.environ['SDL_AUDIODRIVER'] = 'alsa'
-os.environ['AUDIODRIVER'] = 'alsa'
-os.environ['PULSE_RUNTIME_PATH'] = '/run/user/1000/pulse'  # Ajuste o ID do usuário se necessário
-
 import sys
 import time
 from config import *
 from system_monitor import SystemMonitor
 from command_executor import CommandExecutor
-from smooth_voice import SmoothVoice  # SUBSTITUA esta linha
-from enhanced_output import EnhancedOutput  # NOVO
+from enhanced_output import EnhancedOutput
 from intelligent_processor import IntelligentProcessor
 
 class JARVIS:
     def __init__(self):
         self.monitor = SystemMonitor()
         self.executor = CommandExecutor()
-        self.voice = SmoothVoice()  # ATUALIZADO
-        self.output = EnhancedOutput()  # NOVO
+        self.output = EnhancedOutput()
         self.processor = IntelligentProcessor()
         self.running = True
         
@@ -28,10 +21,10 @@ class JARVIS:
         self.output.clear_screen()
         self.output.print_header()
         
-        # Mensagem de boas-vindas com efeito
+        # Mensagem de boas-vindas
         welcome_msg = "Sistema Vlad-GPT inicializado. Digite 'ajuda' para ver os comandos disponíveis."
         self.output.print_jarvis_message(welcome_msg, "info")
-        self.voice.speak("Olá! Eu sou o Vlad-GPT. Sistema inicializado e pronto para ajudá-lo.")
+        print("🔇 Modo sem voz ativado")
     
     def process_command(self, command):
         """Processa comandos usando IA generativa"""
@@ -39,7 +32,6 @@ class JARVIS:
         
         # Comandos de controle do sistema
         if command in ['sair', 'exit', 'quit', 'parar']:
-            self.voice.speak("Encerrando sistema Vlad-GPT. Até logo!", priority=True)
             self.running = False
             return self.output.colorize("👋 Encerrando Vlad-GPT...", "bright_yellow")
         
@@ -56,11 +48,6 @@ class JARVIS:
         
         elif command in ['sistema', 'system', 'status']:
             return self.show_system_info()
-        
-        elif command in ['voz', 'voice']:
-            self.output.print_jarvis_message("Alternando para modo voz...", "info")
-            self.run_voice_mode()
-            return ""
         
         elif command == '':
             return ""
@@ -84,7 +71,7 @@ class JARVIS:
 {self.output.colorize('🤖 Vlad-GPT - ASSISTENTE INTELIGENTE', 'bright_cyan', 'bold')}
 
 {self.output.colorize('💡 COMO USAR:', 'bright_yellow')}
-Fale ou digite em {self.output.colorize('linguagem natural', 'bright_green')}! Exemplos:
+Digite em {self.output.colorize('linguagem natural', 'bright_green')}! Exemplos:
 • "{self.output.colorize('Como está o sistema?', 'white')}"
 • "{self.output.colorize('Quais processos usam mais CPU?', 'white')}"  
 • "{self.output.colorize('Execute o comando ls -la', 'white')}"
@@ -94,7 +81,6 @@ Fale ou digite em {self.output.colorize('linguagem natural', 'bright_green')}! E
 • {self.output.colorize('sistema', 'bright_green')}    - Status completo do sistema
 • {self.output.colorize('processos', 'bright_green')}  - Lista de processos ativos
 • {self.output.colorize('rede', 'bright_green')}      - Informações de rede
-• {self.output.colorize('voz', 'bright_green')}       - Alterna para modo voz
 • {self.output.colorize('limpar', 'bright_green')}    - Limpa a tela
 • {self.output.colorize('sair', 'bright_red')}        - Encerra o Vlad-GPT
 
@@ -140,26 +126,6 @@ Fale ou digite em {self.output.colorize('linguagem natural', 'bright_green')}! E
         
         return history_text
     
-    def run_voice_mode(self):
-        """Modo de operação por voz com IA"""
-        self.output.print_jarvis_message("Modo voz ativado. Fale seus comandos naturalmente.", "success")
-        self.voice.speak("Modo de voz ativado. Pode falar seus comandos.")
-        
-        def voice_callback(command):
-            self.output.print_user_message(command)
-            result = self.process_command(command)
-            if result and result != self.output.colorize("👋 Encerrando Vlad-GPT...", "bright_yellow"):
-                self.output.print_jarvis_message(result)
-                # Fala apenas o primeiro parágrafo para não ser muito longo
-                lines = result.split('\n')
-                first_line = lines[0].strip()
-                if first_line and not first_line.startswith('#'):
-                    speak_text = first_line[:100]  # Limita a 100 caracteres
-                    self.voice.speak(speak_text)
-        
-        self.voice.continuous_listen(voice_callback)
-        self.output.print_jarvis_message("Retornando ao modo texto.", "info")
-    
     def run_text_mode(self):
         """Modo de operação por texto com output melhorado"""
         while self.running:
@@ -171,37 +137,21 @@ Fale ou digite em {self.output.colorize('linguagem natural', 'bright_green')}! E
                 result = self.process_command(command)
                 if result and result != self.output.colorize("👋 Encerrando Vlad-GPT...", "bright_yellow"):
                     self.output.print_jarvis_message(result)
-                    try:
-                        lines = result.split('\n')
-                        first_line = next((l.strip() for l in lines if l.strip()), '')
-                        if first_line and not first_line.startswith('#'):
-                            speak_text = first_line[:150]
-                            self.voice.speak(speak_text)
-                    except Exception:
-                        pass
                     
             except KeyboardInterrupt:
                 self.output.print_jarvis_message("Interrupção detectada. Encerrando...", "warning")
-                self.voice.speak("Encerrando sistema por interrupção do usuário", priority=True)
                 break
             except Exception as e:
                 self.output.print_jarvis_message(f"Erro: {e}", "error")
     
-    def run(self, mode='text'):
-        """Inicia o Vlad-GPT inteligente"""
-        if mode == 'voice':
-            self.run_voice_mode()
-        else:
-            self.run_text_mode()
+    def run(self):
+        """Inicia o Vlad-GPT inteligente (apenas modo texto)"""
+        self.run_text_mode()
 
 if __name__ == "__main__":
-    mode = 'text'
-    if len(sys.argv) > 1 and sys.argv[1] in ['voice', 'voz']:
-        mode = 'voice'
-    
     try:
         jarvis = JARVIS()
-        jarvis.run(mode)
+        jarvis.run()
     except Exception as e:
         print(f"❌ Erro crítico: {e}")
         print("💡 Tente reinstalar as dependências ou verificar a configuração")
